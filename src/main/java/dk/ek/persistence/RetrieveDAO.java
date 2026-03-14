@@ -51,6 +51,7 @@ public class RetrieveDAO implements IRetrieveDAO {
     public Set<Teacher> getAllTeachersForCourse(String courseName) {
         try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<Teacher> query = em.createQuery("SELECT t FROM Course c JOIN c.teacher t  WHERE c.courseName = :courseName", Teacher.class);
+            TypedQuery<Teacher> query2 = em.createQuery("SELECT t FROM Course c JOIN c.teacher t  WHERE c.courseName = :courseName", Teacher.class);
             query.setParameter("courseName", courseName);
             return new HashSet(query.getResultList());
         }
