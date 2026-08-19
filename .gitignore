@@ -37,4 +37,5 @@ build/
 
 ### Mac OS ###
 .DS_Store**/target/
+**/.DS_Store
 **/target/
