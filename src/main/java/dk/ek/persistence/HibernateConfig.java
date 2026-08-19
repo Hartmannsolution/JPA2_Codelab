@@ -55,8 +55,6 @@ public class HibernateConfig {
     private static void getAnnotationConfiguration(Configuration configuration) {
         configuration.addAnnotatedClass(Student.class);
         configuration.addAnnotatedClass(Course.class);
-        configuration.addAnnotatedClass(Teacher.class);
-
     }
 
     private static EntityManagerFactory createEMF() {
@@ -87,7 +85,14 @@ public class HibernateConfig {
 
 
     private static String getDBName() {
-        return Utils.getPropertyValue("db.name", "properties-from-pom.properties");
+        String dbName = System.getenv("DB_NAME");
+        if (dbName == null || dbName.isBlank()) {
+            dbName = System.getProperty("db.name");
+        }
+        if (dbName == null || dbName.isBlank()) {
+            dbName = Utils.getPropertyValue("db.name", "config.properties");
+        }
+        return dbName;
     }
 
     private static Properties setBaseProperties(Properties props) {

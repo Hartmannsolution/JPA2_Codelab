@@ -6,13 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "student")
-public class Student implements IEntity{
+public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -21,15 +23,20 @@ public class Student implements IEntity{
     private String email;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @ManyToOne // Owning side
-    @JoinColumn(name = "course_id")
-    private Course course;
-    public Student(String name, String email, Course course) {
+    private Set<Long> courseIds = new HashSet<>();
+    public Student(String name, String email) {
         this.name = name;
         this.email = email;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        this.course = course;
     }
-
+    public void assignToCourse(Long courseId){
+        if(courseId == null){
+            throw new IllegalArgumentException("Course ID cannot be null");
+        }
+        if(courseIds.contains(courseId)){
+            throw new IllegalArgumentException("Student is already assigned to course with ID: " + courseId);
+        }
+        courseIds.add(courseId);
+    }
 }

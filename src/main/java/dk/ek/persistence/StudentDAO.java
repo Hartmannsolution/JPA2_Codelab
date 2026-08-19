@@ -52,6 +52,19 @@ public class StudentDAO implements IDAO<Student> {
         }
     }
 
+    public Student assignStudentToCourse(Student student, Long courseId){
+        try(EntityManager em = emf.createEntityManager()){
+            Course course = em.find(Course.class, courseId);
+            if(course == null)
+                throw new EntityNotFoundException("No entity found with id: "+courseId);
+            em.getTransaction().begin();
+            student.assignToCourse(courseId);
+            em.merge(student);
+            em.getTransaction().commit();
+            return student;
+        }
+    }
+
     @Override
     public Long delete(Student e) {
         try(EntityManager em = emf.createEntityManager()){

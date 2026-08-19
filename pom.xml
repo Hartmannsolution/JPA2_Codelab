@@ -16,7 +16,6 @@
         <postgresql.version>42.6.0</postgresql.version>
         <junit.version>5.9.1</junit.version>
         <testcontainers.version>1.18.0</testcontainers.version>
-        <db.name>university</db.name>
     </properties>
     <dependencies>
         <dependency>
@@ -64,21 +63,19 @@
         <finalName>app</finalName> <!-- This is the name of the jar file -->
         <plugins>
             <plugin>
-                <!--  https://www.baeldung.com/java-accessing-maven-properties  -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>write-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <outputFile>${project.build.outputDirectory}/properties-from-pom.properties</outputFile>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>17</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.34</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
         </plugins>
     </build>

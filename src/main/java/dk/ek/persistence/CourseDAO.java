@@ -6,8 +6,9 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class CourseDAO implements IDAO<Course> {
+public class CourseDAO implements IDAO<Course>, IRetrieveCourseData  {
     EntityManagerFactory emf;
     public CourseDAO(EntityManagerFactory _emf){
         this.emf = _emf;
@@ -62,6 +63,33 @@ public class CourseDAO implements IDAO<Course> {
             em.remove(employee);
             em.getTransaction().commit();
             return employee.getId();
+        }
+    }
+    @Override
+    public Set<Course> getCoursesByStudent(Long studentId) {
+        try(EntityManager em = emf.createEntityManager()){
+            Student student = em.find(Student.class, studentId);
+            if(student == null){
+                throw new IllegalArgumentException("No student found with that id");
+            }
+            return student.getCourseIds()
+                    .stream()
+                    .map(id -> em.find(Course.class, id))
+                    .collect(Collectors.toSet());
+        }
+    }
+
+    @Override
+    public Set<Student> getByCourseId(Long courseId) {
+        try(EntityManager em = emf.createEntityManager()){
+            Course course = em.find(Course.class, courseId);
+            if(course == null)
+                throw new EntityNotFoundException("No entity found with id: "+courseId);
+            Set<Student> allStudents = new HashSet<>(em.createQuery("SELECT s FROM Student s", Student.class).getResultList());
+            return allStudents
+                    .stream()
+                    .filter(s->s.getCourseIds().contains(courseId))
+                    .collect(Collectors.toSet());
         }
     }
 }
