@@ -52,6 +52,7 @@ public class StudentDAO implements IDAO<Student> {
         }
     }
 
+
     public Student assignStudentToCourse(Student student, Long courseId){
         try(EntityManager em = emf.createEntityManager()){
             Course course = em.find(Course.class, courseId);
