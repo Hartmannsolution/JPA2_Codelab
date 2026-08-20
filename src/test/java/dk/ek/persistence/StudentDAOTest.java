@@ -52,5 +52,4 @@ class StudentDAOTest {
         System.out.println("Student SIZE: "+students.size());
         assertTrue(students.size()==3);
     }
-
 }
