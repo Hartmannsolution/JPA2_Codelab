@@ -24,6 +24,7 @@ public class Student {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Set<Long> courseIds = new HashSet<>();
+
     public Student(String name, String email) {
         this.name = name;
         this.email = email;
