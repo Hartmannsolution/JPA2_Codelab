@@ -59,7 +59,7 @@ class StudentDAOTest {
     @DisplayName("Create student has ID after creation")
     void create() {
         Student student = studentDAO.create(new Student());
-        assertTrue(student.getId()!=null);
+        assertNotNull(student.getId());
     }
 
     @Test
@@ -67,15 +67,14 @@ class StudentDAOTest {
     void setupTest(){
         Set<Student> students = studentDAO.get();
         System.out.println("Student SIZE: "+students.size());
-        assertTrue(students.size()==3);
+        assertEquals(3, students.size());
     }
 
     @Test
     @DisplayName("Test assignment by getting students from specific course")
     void assignmentTest(){
         Set<Student> studentsInCourse1 = retrieveCourseData.getByCourseId(c1.getId());
-        assertTrue(studentsInCourse1.size() == 2);
-
+        assertEquals(2, studentsInCourse1.size());
     }
     @Test
     @DisplayName("Test courses by a students")
