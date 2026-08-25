@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 @Setter
 @Getter
+@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "student")
@@ -24,6 +26,12 @@ public class Student {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Set<Long> courseIds = new HashSet<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private StudentGradeCard gradeCard = new StudentGradeCard();
+
+    @ManyToOne@JoinColumn(name = "address_id")
+    private Address address;
 
     public Student(String name, String email) {
         this.name = name;

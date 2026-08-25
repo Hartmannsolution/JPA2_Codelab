@@ -16,6 +16,7 @@ public class StudentDAO implements IDAO<Student> {
     public Student create(Student e) {
         try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();
+            em.persist(e.getGradeCard());
             em.persist(e);
             em.getTransaction().commit();
             return e;
@@ -40,13 +41,24 @@ public class StudentDAO implements IDAO<Student> {
     }
 
     @Override
-    public Student update(Student e) {
+    public Student update(Student student) {
         try(EntityManager em = emf.createEntityManager()){
-            Student foundstudent = em.find(Student.class, e.getId());
+            Student foundstudent = em.find(Student.class, student.getId());
             if(foundstudent == null)
-                throw new EntityNotFoundException("No entity found with id: "+e.getId());
+                throw new EntityNotFoundException("No entity found with id: "+student.getId());
             em.getTransaction().begin();
-            Student student = em.merge(e);
+
+            StudentGradeCard gradeCard = student.getGradeCard();
+            em.merge(gradeCard);
+            Address address = student.getAddress();
+            if(address.getId() == null)
+                em.persist(address);
+            else
+                address = em.merge(address);
+
+            student.setAddress(address);
+
+            student = em.merge(student);
             em.getTransaction().commit();
             return student;
         }

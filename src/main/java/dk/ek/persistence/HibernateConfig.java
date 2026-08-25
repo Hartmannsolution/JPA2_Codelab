@@ -55,6 +55,8 @@ public class HibernateConfig {
     private static void getAnnotationConfiguration(Configuration configuration) {
         configuration.addAnnotatedClass(Student.class);
         configuration.addAnnotatedClass(Course.class);
+        configuration.addAnnotatedClass(StudentGradeCard.class);
+        configuration.addAnnotatedClass(Address.class);
     }
 
     private static EntityManagerFactory createEMF() {
