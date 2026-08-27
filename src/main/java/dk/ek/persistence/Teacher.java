@@ -25,4 +25,13 @@ public class Teacher implements IEntity{
         this.email = email;
         this.zoom = zoom;
     }
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", zoom='" + zoom + '\'' +
+                '}';
+    }
 }

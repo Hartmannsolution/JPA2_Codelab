@@ -25,7 +25,7 @@ public class StudentDAO implements IDAO<Student> {
     @Override
     public Set<Student> get() {
         try(EntityManager em = emf.createEntityManager()){
-            return new HashSet(em.createQuery("SELECT e FROM Student e").getResultList());
+            return new HashSet<>(em.createQuery("SELECT e FROM Student e", Student.class).getResultList());
         }
     }
 

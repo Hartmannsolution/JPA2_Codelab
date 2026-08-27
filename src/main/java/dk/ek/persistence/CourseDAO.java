@@ -25,7 +25,7 @@ public class CourseDAO implements IDAO<Course> {
     @Override
     public Set<Course> get() {
         try(EntityManager em = emf.createEntityManager()){
-            return new HashSet(em.createQuery("SELECT e FROM Course e").getResultList());
+            return new HashSet<>(em.createQuery("SELECT e FROM Course e", Course.class).getResultList());
         }
     }
 

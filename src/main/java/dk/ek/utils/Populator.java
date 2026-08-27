@@ -1,6 +1,7 @@
 package dk.ek.utils;
 
 import dk.ek.persistence.*;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
@@ -14,10 +15,27 @@ public class Populator {
     public Populator(EntityManagerFactory _emf){
         this.emf = _emf;
         this.studentDAO = new StudentDAO(emf);
-        this.teacherDAO = new TeatherDAO(emf);
+        this.teacherDAO = new TeacherDAO(emf);
         this.courseDAO = new CourseDAO(emf);
     }
     public Map<String, IEntity> populate(){
+//        try(EntityManager em = emf.createEntityManager()){
+//            em.getTransaction().begin();
+//            // delete all entities to start fresh
+//            em.createQuery("DELETE FROM Student").executeUpdate();
+//            em.createQuery("DELETE FROM Course").executeUpdate();
+//            em.createQuery("DELETE FROM Teacher").executeUpdate();
+//
+//            em.getTransaction().commit();
+//        }
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+
+            em.createNativeQuery("TRUNCATE TABLE student, course, teacher RESTART IDENTITY CASCADE")
+                    .executeUpdate();
+
+            em.getTransaction().commit();
+        }
         Teacher teacher1 = new Teacher("Abraham", "abe@college.com", "zoom.com/abe");
         Teacher teacher2 = new Teacher("Benedict", "bene@college.com", "zoom.com/bene");
         LocalDate start = LocalDate.of(2026, 2, 1);

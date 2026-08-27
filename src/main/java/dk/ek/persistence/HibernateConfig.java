@@ -7,7 +7,10 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.LogManager;
 
 public class HibernateConfig {
     /**
@@ -17,6 +20,17 @@ public class HibernateConfig {
     private static EntityManagerFactory emf;
     private static EntityManagerFactory emfForTest;
     private static boolean isIntegrationTest = false; // this flag is set for
+
+    // Load logging configuration from logging.properties to remove some noise from Hibernate logs
+    static {
+        try (InputStream is = HibernateConfig.class.getClassLoader().getResourceAsStream("logging.properties")) {
+            if (is != null) {
+                LogManager.getLogManager().readConfiguration(is);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Could not load logging.properties", e);
+        }
+    }
 
     public static void setTestMode(boolean isTest) {
         HibernateConfig.isIntegrationTest = isTest;
@@ -51,12 +65,22 @@ public class HibernateConfig {
         }
     }
 
+    public static void shutdown() {
+        if (emf != null) {
+            try {
+                if (emf.isOpen()) emf.close();
+            } finally {
+                emf = null;
+            }
+        }
+    }
+
     // TODO: IMPORTANT: Add Entity classes here for them to be registered with Hibernate
     private static void getAnnotationConfiguration(Configuration configuration) {
         configuration.addAnnotatedClass(Student.class);
         configuration.addAnnotatedClass(Course.class);
         configuration.addAnnotatedClass(Teacher.class);
-
+        configuration.addAnnotatedClass(Employee.class);
     }
 
     private static EntityManagerFactory createEMF() {
@@ -87,7 +111,14 @@ public class HibernateConfig {
 
 
     private static String getDBName() {
-        return Utils.getPropertyValue("db.name", "properties-from-pom.properties");
+        String dbName = System.getenv("DB_NAME");
+        if (dbName == null || dbName.isBlank()) {
+            dbName = System.getProperty("db.name");
+        }
+        if (dbName == null || dbName.isBlank()) {
+            dbName = Utils.getPropertyValue("db.name", "config.properties");
+        }
+        return dbName;
     }
 
     private static Properties setBaseProperties(Properties props) {
@@ -95,9 +126,10 @@ public class HibernateConfig {
         props.put("hibernate.connection.driver_class", "org.postgresql.Driver");
         props.put("hibernate.hbm2ddl.auto", "update");
         props.put("hibernate.current_session_context_class", "thread");
-        props.put("hibernate.show_sql", "true");
-        props.put("hibernate.format_sql", "true");
-        props.put("hibernate.use_sql_comments", "true");
+        String showSql = Utils.getPropertyValue("hibernate.show_sql", "config.properties");
+        props.put("hibernate.show_sql", showSql);
+        props.put("hibernate.format_sql", showSql);
+        props.put("hibernate.use_sql_comments", showSql);
         return props;
     }
 
@@ -109,9 +141,11 @@ public class HibernateConfig {
     }
 
     private static Properties setDevProperties(Properties props) {
-        props.put("hibernate.connection.url", "jdbc:postgresql://localhost:5432/" + getDBName());
-        props.put("hibernate.connection.username", "dev");
-        props.put("hibernate.connection.password", "ax2");
+        String host = Utils.getPropertyValue("db.host", "config.properties");
+        String port = Utils.getPropertyValue("db.port", "config.properties");
+        props.put("hibernate.connection.url", "jdbc:postgresql://" + host + ":" + port + "/" + getDBName());
+        props.put("hibernate.connection.username", Utils.getPropertyValue("db.username", "config.properties"));
+        props.put("hibernate.connection.password", Utils.getPropertyValue("db.password", "config.properties"));
         return props;
     }
 
@@ -122,7 +156,6 @@ public class HibernateConfig {
         props.put("hibernate.connection.username", "postgres");
         props.put("hibernate.connection.password", "postgres");
         props.put("hibernate.archive.autodetection", "class");
-        props.put("hibernate.show_sql", "true");
         props.put("hibernate.hbm2ddl.auto", "create-drop");
         return props;
     }

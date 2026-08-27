@@ -15,8 +15,8 @@
         <hibernate.version>6.2.4.Final</hibernate.version>
         <postgresql.version>42.6.0</postgresql.version>
         <junit.version>5.9.1</junit.version>
-        <testcontainers.version>1.18.0</testcontainers.version>
-        <db.name>university</db.name>
+        <slf4j.version>1.7.36</slf4j.version>
+        <testcontainers.version>2.0.3</testcontainers.version>
     </properties>
     <dependencies>
         <dependency>
@@ -49,14 +49,14 @@
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers</artifactId>
+            <artifactId>testcontainers-postgresql</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${testcontainers.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -79,6 +79,29 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>17</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.34</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>-Djava.util.logging.config.file=${project.build.outputDirectory}/logging.properties</argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>

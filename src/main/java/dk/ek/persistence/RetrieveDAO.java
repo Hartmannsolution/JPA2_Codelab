@@ -16,7 +16,7 @@ public class RetrieveDAO implements IRetrieveDAO {
     public RetrieveDAO(EntityManagerFactory emf) {
         this.courseDAO = new CourseDAO(emf);
         this.studentDAO = new StudentDAO(emf);
-        this.teacherDAO = new TeatherDAO(emf);
+        this.teacherDAO = new TeacherDAO(emf);
         this.emf = emf;
     }
 
@@ -25,7 +25,7 @@ public class RetrieveDAO implements IRetrieveDAO {
         try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<Student> query = em.createQuery("SELECT s FROM Student s WHERE s.course.id = :courseId", Student.class);
             query.setParameter("courseId", courseId);
-            return new HashSet(query.getResultList());
+            return new HashSet<>(query.getResultList());
         }
     }
 
@@ -34,7 +34,7 @@ public class RetrieveDAO implements IRetrieveDAO {
         try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<Course> query = em.createQuery("SELECT c FROM Course c WHERE c.teacher.id = :teacherId", Course.class);
             query.setParameter("teacherId", teacherId);
-            return new HashSet(query.getResultList());
+            return new HashSet<>(query.getResultList());
         }
     }
 
@@ -43,7 +43,7 @@ public class RetrieveDAO implements IRetrieveDAO {
         try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<Student> query = em.createQuery("SELECT s FROM Student s WHERE s.course.teacher.id = :teacherId", Student.class);
             query.setParameter("teacherId", teacherId);
-            return new HashSet(query.getResultList());
+            return new HashSet<>(query.getResultList());
         }
     }
 
@@ -51,9 +51,8 @@ public class RetrieveDAO implements IRetrieveDAO {
     public Set<Teacher> getAllTeachersForCourse(String courseName) {
         try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<Teacher> query = em.createQuery("SELECT t FROM Course c JOIN c.teacher t  WHERE c.courseName = :courseName", Teacher.class);
-            TypedQuery<Teacher> query2 = em.createQuery("SELECT t FROM Course c JOIN c.teacher t  WHERE c.courseName = :courseName", Teacher.class);
-            query.setParameter("courseName", courseName);
-            return new HashSet(query.getResultList());
+            query.setParameter("courseName", CourseName.valueOf(courseName));
+            return new HashSet<>(query.getResultList());
         }
     }
 }

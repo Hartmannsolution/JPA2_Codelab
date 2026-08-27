@@ -2,16 +2,6 @@ package dk.ek.persistence;
 
 import dk.ek.utils.Populator;
 import jakarta.persistence.EntityManagerFactory;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-
-import java.util.Map;
-import java.util.Set;
-
-import dk.ek.utils.Populator;
-import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.*;
 
 import java.util.Map;
@@ -19,37 +9,23 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class IRetrieveDAOTest {
 
     private static EntityManagerFactory emf;
     private static IRetrieveDAO retrieveDAO;
-
-//    private static IDAO<Student> studentDAO;
-//    private static IDAO<Teacher> teacherDAO;
-//    private static IDAO<Course> courseDAO;
-//
-//    private static IRetrieveDAO retrieveDAO;
-
     private static Populator populator;
     private static Map<String, IEntity> entities;
 
     @BeforeAll
     static void setUp() {
         emf = HibernateConfig.getEntityManagerFactoryForTest();
-
-//        studentDAO = new StudentDAO(emf);
-//        courseDAO = new CourseDAO(emf);
-//        teacherDAO = new TeacherDAO(emf); // you had TeatherDAO, use your real class name
-//
-        retrieveDAO = new RetrieveDAO(emf); // <-- change to your implementation
-
+        retrieveDAO = new RetrieveDAO(emf);
         populator = new Populator(emf);
     }
 
     @BeforeEach
     void init() {
+
         entities = populator.populate();
     }
 

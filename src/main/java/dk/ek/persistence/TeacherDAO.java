@@ -7,9 +7,9 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TeatherDAO implements IDAO<Teacher> {
+public class TeacherDAO implements IDAO<Teacher> {
     EntityManagerFactory emf;
-    public TeatherDAO(EntityManagerFactory _emf){
+    public TeacherDAO(EntityManagerFactory _emf){
         this.emf = _emf;
     }
 
@@ -26,7 +26,7 @@ public class TeatherDAO implements IDAO<Teacher> {
     @Override
     public Set<Teacher> get() {
         try(EntityManager em = emf.createEntityManager()){
-            return new HashSet(em.createQuery("SELECT e FROM Teacher e").getResultList());
+            return new HashSet<>(em.createQuery("SELECT e FROM Teacher e", Teacher.class).getResultList());
         }
     }
 

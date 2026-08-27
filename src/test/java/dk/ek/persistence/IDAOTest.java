@@ -16,19 +16,22 @@ class IDAOTest {
     private static IDAO<Course> courseDAO;
     private static Populator populator;
     private static Map<String, IEntity> entities;
+    Teacher t1, t2, t3;
+    Course c1, c2, c3;
 
     @BeforeAll
     static void setUp() {
         emf = HibernateConfig.getEntityManagerFactoryForTest();
-        studentDAO = new StudentDAO(emf);
-        courseDAO = new CourseDAO(emf);
-        teacherDAO = new TeatherDAO(emf);
-        populator = new Populator(emf);
-        entities = populator.populate();
     }
 
     @BeforeEach
     void init() {
+        studentDAO = new StudentDAO(emf);
+        courseDAO = new CourseDAO(emf);
+        teacherDAO = new TeacherDAO(emf);
+        populator = new Populator(emf);
+        entities = populator.populate();
+        t1 = new Teacher();
         // Clean up the database before each test
     }
 
@@ -45,12 +48,17 @@ class IDAOTest {
     @DisplayName("StudentDAO.get() should return all students with their associated course and teacher")
     void getStudentsWithCoursesAndTeachers() {
         Set<Student> students = studentDAO.get();
-        students.forEach(s -> {
-            System.out.println(s.getName() + " is enrolled in course: " + s.getCourse().getCourseName()
-                    + " taught by: " + s.getCourse().getTeacher().getName());
-        });
         int actual = students.size();
         int expected = 6; // Based on the Populator data
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("Test")
+    void testExample(){
+        String expected = "Abraham";
+        String actual = ((Teacher) entities.get("teacher1")).getName();
+        String actual2 = t1.getName();
         assertEquals(expected, actual);
     }
 //    @Test

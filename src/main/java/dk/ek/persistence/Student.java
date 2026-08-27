@@ -32,4 +32,16 @@ public class Student implements IEntity{
         this.course = course;
     }
 
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", course=" + (course != null ? course.getCourseName() : null) +
+                '}';
+    }
+
 }
